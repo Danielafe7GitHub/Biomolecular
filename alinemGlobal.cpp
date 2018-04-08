@@ -1,13 +1,14 @@
 #include <iostream>
 #include <vector>
 #include <algorithm>
-
+#include <time.h>
 using namespace std;
 
 string cadena1 = "-"; string cadena2 = "-";
 int dummy = -5000;
 int cantALin = 0;
 vector<vector<int> > secMatrix;
+vector< string > cadenaFinal;
 
 int maximo(int a , int b , int c)
 {
@@ -89,40 +90,47 @@ void printMatrix(vector<vector<int> > &matrix)
 
 
 
-void secuencias(int i, int j)
+void trace_back(int i, int j,string aliment)
 {
 
     if((i==0 && j==0))
     {
         cantALin += 1;
+        cadenaFinal.push_back(aliment);
         return;
     }
 
+    string temp = aliment;
     if(i > 0 && j > 0)
     {
         if(secMatrix[i][j] == ( secMatrix[i-1][j-1] + ( (cadena1[i] == cadena2[j]) ? 1 : -1) ) )
-        //if(secMatrix[i][j] + 1 ==  secMatrix[i-1][j-1] || secMatrix[i][j] - 1 ==  secMatrix[i-1][j-1])
         {
             //cout<<"Yo vengo de: "<<i<<j<<"  "<<cadena2[j-1]<<endl;
-            secuencias(i-1,j-1);
+            aliment += cadena2[j];
+            trace_back(i-1,j-1,aliment);
         }
     }
 
+    aliment = temp;
     if(j>0)
     {
-        if(secMatrix[i][j] + 2 ==  secMatrix[i][j-1])
+        if(secMatrix[i][j]  ==  secMatrix[i][j-1] - 2)
         {
             //cout<<"Yo secMatrix de: "<<i<<j<<"  <--"<<endl;
-            secuencias(i,j-1);
+            aliment += "-";
+            trace_back(i,j-1,aliment);
         }
 
     }
+    aliment = temp;
     if(i>0)
     {
-        if(secMatrix[i][j] + 2 ==  secMatrix[i-1][j])
+        if(secMatrix[i][j]  ==  secMatrix[i-1][j] - 2)
         {
+
             //cout<<"Yo vengo de: "<<i<<j<<"  |"<<endl;
-            secuencias(i-1,j);
+            aliment += "-";
+            trace_back(i-1,j,aliment);
         }
 
     }
@@ -132,22 +140,39 @@ void secuencias(int i, int j)
 
 int main()
 {
+    clock_t t,t1;
     /*string cadena_1 = "ACTGATTCA";
     string cadena_2 = "ACGCATCA";*/
-    string cadena_1 = "AAAC";
-    string cadena_2 = "AGC";
-    /*string cadena_1 = "ACGGTGCAGTCACCAGGCGGTGCAGTCACCATAACGGTGCAGTCACCAGGCGGTGCAGTCACCAGCAACGGTGCAGTCACCAGGCGAAGTGCAGTCACC";
-    string cadena_2 = "ACGGTGCAGTCACCATTCGGTGCAGTCACCAAAAGGTGCATAACCAGGCGGTGCAGTCACCAGCAACTTTGCAGGGCAGGCGAAGTGCAGTCATT";*/
+    /*string cadena_1 = "AAAC";
+    string cadena_2 = "AGC";*/
+
     /*string cadena_1 = "ACGGTGCACAAGTTCACCAGTTGAACAAATTCGGTGCAGTCACCATAACGGTGCAGTCACCAGGCGGTGCAGTCACCCGGCGGTCGGTGCAGCATGCAAGCAACGGTGCAGTCACCAGGCACCAGTGCACAAGTTCACCAGTTTAACGAAGTGCAGTCACC";
     string cadena_2 = "ACCGTGCAGTTGAACATCGGTGCAGAATTCGGTGCAGTCACCATAACGGTCGGTGCAGTGCAGTCACCAGGCGGTGCAGTCACCCGGCGGTCGGTGCAGCATGCAAGCAACGGTGCAGTCACCAGGCACCATCAGTCACCAGGCACCACCAGCGGTGCAG";
 */
-    secMatrix = init(cadena_1,cadena_2);
-    //printMatrix(matrix);
-    secuencias(cadena_1.size(),cadena_2.size());
-    cout<<cadena1<<endl;
-    cout<<cadena2<<endl;
-    cout<<"La cantidad de Alineamientos Optimos es: "<<cantALin<<endl;
+    string cadena_1 = "ACGGTGCAGTCACCAGGCGGTGCAGTCACCATAACGGTGCAGTCACCAGGCGGTGCAGTCACCAGCAACGGTGCAGTCACCAGGCGAAGTGCAGTCACC";
+    string cadena_2 = "ACGGTGCAGTCACCATTCGGTGCAGTCACCAAAAGGTGCATAACCAGGCGGTGCAGTCACCAGCAACTTTGCAGGGCAGGCGAAGTGCAGTCATT";
 
-    // hacerlo recursivo, ademas de allar el # de alineamientos ok
+
+    t = clock();
+    secMatrix = init(cadena_1,cadena_2);
+    t = clock() - t;
+
+    //printMatrix(secMatrix);
+    t1 = clock();
+    trace_back(cadena_1.size(),cadena_2.size(),"");
+    t1 = clock() - t1;
+    /*cout<<cadena1<<endl;
+    cout<<cadena2<<endl;*/
+
+    cout<<"El score es: "<<secMatrix[cadena_1.size()][cadena_2.size()]<<endl;
+    cout<<"La cantidad de Alineamientos Optimos es: "<<cantALin<<endl;
+    printf ("Me tomo  (%f seconds) llenar la Matriz.\n",((float)t)/CLOCKS_PER_SEC);
+    printf ("Me tomo  (%f seconds) el traceBack.\n",((float)t1)/CLOCKS_PER_SEC);
+
+
+    for(int i = 0 ; i < cadenaFinal.size() ; ++i ){
+        reverse(cadenaFinal[i].begin() , cadenaFinal[i].end() );
+        printf("%s\n\n",cadenaFinal[i].c_str());
+    }
     return 0;
 }
