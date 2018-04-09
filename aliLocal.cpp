@@ -77,8 +77,13 @@ void trace_back_1(int i, int j, string alineamiento) //Rompemos si '0' o '-'
 {
     if(tabla[i][j] == 0) //Si llega a un '0' la cadena es correcta, si nos encontramos con - la cadena se descarta
     {
-        cantALin += 1;
-        alineamientos.push_back(alineamiento);
+
+        //If score no corresponde no push()
+        if(alineamiento.size() == score)
+        {
+            alineamientos.push_back(alineamiento);
+            cantALin += 1;
+        }
         alineamiento.clear();
         return;
     }
@@ -171,8 +176,8 @@ void search_score()
 
     for(int i=0; i<scores.size();i++)
     {
-        //trace_back_1(scores[i].first,scores[i].second,"");
-        trace_back_2(scores[i].first,scores[i].second,"");
+        trace_back_1(scores[i].first,scores[i].second,"");
+        //trace_back_2(scores[i].first,scores[i].second,"");
         printAlineamientos();
         cout<<"-----------------------------------"<<endl;
         cout<<endl;
@@ -196,8 +201,15 @@ int main()
     clock_t t,t1;
     /*string c1 = "AGCT";
     string c2 = "GCA";*/
-    string c1 = "ATGACGTGT";
-    string c2 = "ATGTACTC";
+    /*string c1 = "ATGACGTGT";
+    string c2 = "ATGTACTC";*/
+
+    /*string c1 = "ATCGAAAGTACATCGAAAGTACAAATCGAAAGTTACGTATATCGAAAGTACATCGAAAGTACAAATCGAAAGTTACGTATCGAAAGTACCGAAAGTAC";
+    string c2 = "CGGTCAAGAAGTTACAATGTAAGTACGCTAGCGGTCATTACAGCAGTACCGGTAGAGGAGCAAGAAGTTACAGGGAAA";
+*/
+    string c1 = "GTACATCCAGAAGTAGTACGCGTATAGTACGTAACACAACAGTTGGAGGTGTGTCGAGTCGAAGTAACAGGTCACAACTGAAGTACGCGATTAGTACGTACCTGA";
+    string c2 = "CAGCATCAGAAGTACGCGTATAGTACGTAACACAACAGTTGGAGGTGTAGTACGCATATAGTACGTACCTGA";
+
 
     t = clock();
     tabla = init(c1,c2);
