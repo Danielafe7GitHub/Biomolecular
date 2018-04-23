@@ -149,7 +149,7 @@ int matriz_score_pares()
             }
 
         }
-        cout<<"El score Total es: "<<score_matriz_estrella<<endl;
+        //cout<<"El score Total es: "<<score_matriz_estrella<<endl;
         matrix_score.push_back(score_matriz_estrella);
         score_matriz_estrella = 0;
     }
@@ -164,7 +164,7 @@ int matriz_score_pares()
         }
 
     }
-    cout<<"La cadena Centro es: "<<pos_cadena+1<<endl;
+    //cout<<"La cadena Centro es: "<<pos_cadena+1<<endl;
     return pos_cadena;  //Retorna la cadena Centro
 }
 
@@ -172,7 +172,7 @@ int matriz_score_pares()
 vector<string> msa_results;
 void building_msa(int centro)
 {
-        string cadena_centro = alineamientos_msa[centro];
+    string cadena_centro = alineamientos_msa[centro];
     msa_results.push_back(cadena_centro);
     for(int i=0;i<alineamientos_msa.size();i++)
     {
@@ -194,7 +194,7 @@ void building_msa(int centro)
     int string_major_lenth = 0;
     for(int i=0;i<msa_results.size();i++)
     {
-        cout<<msa_results[i]<<endl;
+        //cout<<msa_results[i]<<endl;
         if(msa_results[i].size() > string_major_lenth)
         {
             string_major_lenth = msa_results[i].size();
@@ -214,7 +214,9 @@ void building_msa(int centro)
                 msa_results[i].push_back('-');
             gaps_num = 0;
         }
+        cout<<"Los alineamientos finales son:"<<endl;
         cout<<msa_results[i]<<endl;
+        cout<<endl;
     }
 
 }
@@ -233,37 +235,65 @@ void suma_pares()
 {
     int columnas = msa_results[0].size();
     int filas = msa_results.size();
-    cout<<"Columnas "<<columnas<<"  filas "<<filas<<endl;
+    int score_total = 0;
+    //cout<<"Columnas "<<columnas<<"  filas "<<filas<<endl;
     //Por cada coumna de los alineamientos
     for(int i=0;i<columnas;i++)
     {
         for(int j=0;j<filas;j++)
         {
+            for(int k=j+1; k<filas;k++)
+            {
+                //cout<<msa_results[j][i]<<" vs "<<msa_results[j][i]<<endl;
+                score_total += _sc(msa_results[j][i],msa_results[j][i]);
 
+            }
         }
+        //cout<<endl;
+        //cout<<"----------------------------------"<<endl;
     }
+    cout<<"El score total es: "<<score_total<<endl;
 }
 int main()
 {
     clock_t t,t1;
 
     /*string cadena_1 = "ATTGCCATT";
-    string cadena_2 = "ACTGACC";*/
-    string cadena_1 = "ATTGCCATT";
     string cadena_2 = "ATGGCCATT";
     string cadena_3 = "ATCCAATTTT";
     string cadena_4 = "ATCTTCTT";
-    string cadena_5 = "ACTGACC";
+    string cadena_5 = "ACTGACC";*/
+
+
+    string cadena_1 = "ACGGTGAGTGATCACCTAGCACAGGAGTGATCACCTAACGGTGCAGTCACCCGGCGGAGAGCGGTGCAGTCACCTCGGTGCAGCATGCAAGC";
+    string cadena_2 = "AACGGTGCAGTAGACGAGTGATCACCTACAGGCACCAGTGCACAAGTTCACCAGTTTAACGAAGTGCAGTCACCAGTTGAACA";
+    string cadena_3 = "AATTCGGTGCAGTCACCACACCTACACCTAACGGACGGAGTGAGTGATCACCTAGCACACCTACACCTAACGGACGG";
+    string cadena_4 = "ACCTACAAGTCTAAAGTCTAAGTGGAACACCTCTACGAGTGATCACCTAACGCACTAACGGACGGACTCGGCGGACGCGGACGGACTGACT";
+    string cadena_5 = "AAACCTAACGGTTCGGTGCAGTCACCACTAACGACCTAGCACACCATCACCTATTGGGAAACGG";
+    string cadena_6 = "TACACGGAGTGAGTGAACGACGATCAATCACCTATCATCACCGGGATAATCACCTGGGAATTCTAT";
+    string cadena_7 = "CACCTAAGGGTATAACGTCGAACCGAATAACATCATCACATCACCTATCTATGTGTAATCACGCTATGGGGACCTATGCGG";
+    string cadena_8 = "CTACAGGCACCAGTCACCTAGCACGGAGAGCGGTGCAGAGGAATAATCACCTGG";
+    string cadena_9 = "ACCTCAACCTCAGGCAACCCAACACGGCAACCCCTCAGGCAACCCAACAC";
+    string cadena_10 = "AACACACCAACCAACCTCAGGCTCAGGCCGAGGAGAGAGCCTCAGGCCCTCACCCTCAGGCGGC";
+
 
     alineamientos_msa.push_back(cadena_1);
     alineamientos_msa.push_back(cadena_2);
     alineamientos_msa.push_back(cadena_3);
     alineamientos_msa.push_back(cadena_4);
     alineamientos_msa.push_back(cadena_5);
+    alineamientos_msa.push_back(cadena_6);
+    alineamientos_msa.push_back(cadena_7);
+    alineamientos_msa.push_back(cadena_8);
+    alineamientos_msa.push_back(cadena_9);
+    alineamientos_msa.push_back(cadena_10);
     int pos_estrella = matriz_score_pares();
 
+    t = clock();
     building_msa(pos_estrella);
     suma_pares();
+    t = clock() - t;
+    printf ("Me tomo  (%f seconds) llenar la Matriz.\n",((float)t)/CLOCKS_PER_SEC);
     /*t = clock();
     secMatrix = init(cadena_3,cadena_5);
     t = clock() - t;
