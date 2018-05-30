@@ -15,9 +15,11 @@ vector <vector<string>> genes_matriz_string;
 vector <vector<float>> genes_matriz;
 vector <vector<float >> matriz_distancia; //832 filas
 vector <vector<float >> matriz_distancia_update;
+vector<vector <string>> gen_nom; //Nombre de los genes
 void read_file()
 {
     vector<string> fila;
+    vector<string> nombre;
     string line;
     ifstream myfile ("/home/danielafe7/CLionProjects/cluster_min/genes.txt");
     if (myfile.is_open())
@@ -30,7 +32,11 @@ void read_file()
             copy(istream_iterator<string>(iss),
                  istream_iterator<string>(),
                  back_inserter(fila));
+
+            nombre.push_back(fila[0]);
+            gen_nom.push_back(nombre);
             fila.erase(fila.begin());
+            nombre.clear();
             genes_matriz_string.push_back(fila);
             /*for(int i=0;i<fila.size();i++)
                 cout<<fila[i]<<"    ";
@@ -156,8 +162,8 @@ void min_cluster()
 {
     vector<float> union_clus;
     float value = 0;
-    gen_distancia();
     //matriz_distancia = {{0,2.15,0.7,1.07,0.85,1.16,1.56},{2.15,0,1.53,1.14,1.38,1.01,2.83},{0.7,1.53,0,0.43,0.21,0.51,1.86},{1.07,1.14,0.43,0,0.29,0.22,2.04},{0.85,1.38,0.21,0.29,0,0.41,2.02},{1.16,1.01,0.55,0.22,0.41,0,2.05},{1.56,2.83,1.86,2.04,2.02,2.05,0}};
+    //gen_nom = {{"A"},{"B"},{"C"},{"D"},{"E"},{"F"},{"G"}};
     //imprimir(matriz_distancia);
     vector<float> tmp;
 
@@ -167,11 +173,23 @@ void min_cluster()
     //Unimos menor distancia (debajo de la diagonal)
     //min_element();
 
-    for(int i=0;i<831;i++)
+    for(int i=0;i<200;i++)//831|6
     {
         int first = min(indx_m,indx_n);
         int second = max(indx_m,indx_n);
-        //----cout<<"K = "<<i+1<<" Min Value: "<<_min<<" Unimos: "<<indx_m<<" y "<<indx_n<<endl;
+        //cout<<"K = "<<i+1<<" Min Value: "<<_min<<" Unimos: "<<first<<" y "<<second<<endl;
+       /* cout<<"K = : "<<i<<endl;
+        cout<<"Unimos los genes: ";
+        for(int k=0;k<gen_nom[first].size();k++)
+            cout<<gen_nom[first][k]<<"    ";
+        cout<<"con  ";
+        for(int k=0;k<gen_nom[second].size();k++)
+            cout<<gen_nom[second][k]<<"    ";
+        cout<<endl;*/
+        //Actualizamos los nombres
+        for(int k=0;k<gen_nom[second].size();k++)
+            gen_nom[first].push_back(gen_nom[second][k]);
+        gen_nom.erase(gen_nom.begin() + second);
 
         //Calculamos la nueva fila min (C vs A,B,D,F,G E vs A,B,D,F,G)
         for(int j=0;j<matriz_distancia.size();j++)
@@ -226,12 +244,24 @@ void min_cluster()
         matriz_distancia.clear();
         matriz_distancia = matriz_distancia_update;
         matriz_distancia_update.clear();
-        //----cout<<"Num filas "<<matriz_distancia.size()<<" Num col "<<matriz_distancia[0].size()<<endl;
+        //-----------cout<<"Num filas "<<matriz_distancia.size()<<" Num col "<<matriz_distancia[0].size()<<endl;
 
 
         //Hallar el nuevo Min para unir
-        //imprimir(matriz_distancia);
+        //-----imprimir(matriz_distancia);
         min_element();
+
+        //Imprimiendo Uniones
+        /*for(int k=0;k<gen_nom.size();k++)
+        {
+            for(int j=0;j<gen_nom[k].size();j++)
+            {
+                cout<<gen_nom[k][j]<<"     ";
+            }
+            cout<<endl;
+        }
+        cout<<"---------------------------------------"<<endl;*/
+
 
 
     }
@@ -242,12 +272,16 @@ void min_cluster()
 int main() {
     clock_t t;
     read_file();
+    /*for(int i=0;i<gen_nom.size();i++)
+        for (int j=0;j<gen_nom[i].size();j++)
+            cout<<"n : "<<i<<"  "<<gen_nom[i][j]<<endl;*/
+
     string_to_float();
-    //gen_distancia();
+    gen_distancia();
     t = clock();
     min_cluster();
     t = clock() - t;
     printf ("Me tomo  (%f seconds) realizar el procedimiento de Amalgamiento simple.\n",((float)t)/CLOCKS_PER_SEC);
-    imprimir(matriz_distancia);
+    //imprimir(matriz_distancia);
     return 0;
 }
