@@ -21,9 +21,14 @@ vector<float > min_val_ori;
 vector<float > min_values_update;
 vector<float > new_distance;
 vector<int> all_index;
+vector<int> indexes;
+vector<vector <string>> gen_nom; //Nombre de los genes
+vector<vector<int>> genes_group;
+
 void read_file()
 {
     vector<string> fila;
+    vector<string> nombre;
     string line;
     ifstream myfile ("/home/danielafe7/CLionProjects/cluster_min/genes.txt");
     if (myfile.is_open())
@@ -36,7 +41,10 @@ void read_file()
             copy(istream_iterator<string>(iss),
                  istream_iterator<string>(),
                  back_inserter(fila));
+            nombre.push_back(fila[0]);
+            gen_nom.push_back(nombre);
             fila.erase(fila.begin());
+            nombre.clear();
             genes_matriz_string.push_back(fila);
             /*for(int i=0;i<fila.size();i++)
                 cout<<fila[i]<<"    ";
@@ -146,12 +154,13 @@ void min_element(int indx, vector<float> a)
 }
 
 int k = 0;
+bool more_one_index = 0;
 void disociativo()
 {
 
     int _indx = 0;
     int _indx_o = 0;
-    vector<float> clusters;
+    vector<int> clusters;
 
     //Paso 2. Eligimos el elemento de mayor valor que comenzará la división Ejemp. G
     for(int i=0;i<min_values.size();i++)
@@ -180,12 +189,37 @@ void disociativo()
 
 
     //Paso 3. Calculamos las nuevas distancias con respecto a _indx Ejemp. G
-
-    for(int i=0;i<matriz_distancia.size();i++)
+    if(more_one_index == 0)
     {
-        if( i != _indx_o)
-            new_distance.push_back(matriz_distancia[i][_indx]);
+        for(int i=0;i<matriz_distancia.size();i++)
+        {
+            if( i != _indx_o)
+                new_distance.push_back(matriz_distancia[i][_indx]);
+        }
+
     }
+    else
+    {
+        //Amalgamiento Simple (MÍN)
+        float _min = 50000;
+
+        for(int i=0;i<matriz_distancia.size();i++)
+        {
+            for(int k=0;k<indexes.size();k++)
+            {
+                if( i != k)
+                {
+                    if(matriz_distancia[i][k] < _min)
+                        _min = indexes[k];
+
+                }
+            }
+
+        }
+        new_distance.push_back(_min);
+        indexes.clear();
+    }
+
 
     //Removemos Ejemp. G de min_values
     //cout<<"Indice: "<<_indx<<endl;
@@ -202,9 +236,10 @@ void disociativo()
         if ( min_values[i] - new_distance[i] >= 0)
         {
             //cout<<"i: "<<i<<endl;
-            clusters.push_back(i + _indx); //Se añade otro elemento al clúster
+            clusters.push_back((i + _indx) % 832); //Se añade otro elemento al clúster
             //Añade al all index
             all_index.push_back(i + _indx);
+            indexes.push_back(i + _indx);
         }
         else
         {
@@ -214,8 +249,12 @@ void disociativo()
 
 
     //Actualizmos la matriz de dis principales
-    cout<<"Los cluster en K = "<<k+1<<" son:"<<endl;
-    imprimir(clusters);
+    //*---cout<<"Los cluster en K = "<<k+1<<" son:"<<endl;
+    genes_group.push_back(clusters);
+    /*for(int y=0;y<clusters.size();y++)
+        cout<<gen_nom[clusters[y]][0]<<"     ";
+    cout<<endl;
+    //imprimir(clusters);*/
     min_values.clear();
     min_values = min_values_update;
     //imprimir(min_values);
@@ -255,8 +294,8 @@ void disociativo()
 
     //Repetimos el procedimiento
     k++;
-    if( min_values.size() > 50)
-        disociativo();
+/*    if( min_values.size() > 2)
+        disociativo();*/
 
     //Falta : Nombre de cluster correcto o al menos indices y ver que sucede > 1 ...e
 }
@@ -284,14 +323,14 @@ void init()
 
 }
 int main() {
-    //clock_t t;
+    clock_t t;
     read_file();
     string_to_float();
     gen_distancia();
-    //t = clock();
 
 
     //matriz_distancia = {{0,2.15,0.7,1.07,0.85,1.16,1.56},{2.15,0,1.53,1.14,1.38,1.01,2.83},{0.7,1.53,0,0.43,0.21,0.51,1.86},{1.07,1.14,0.43,0,0.29,0.22,2.04},{0.85,1.38,0.21,0.29,0,0.41,2.02},{1.16,1.01,0.55,0.22,0.41,0,2.05},{1.56,2.83,1.86,2.04,2.02,2.05,0}};
+    //gen_nom = {{"A"},{"B"},{"C"},{"D"},{"E"},{"F"},{"G"}};
     matriz_distancia_original = matriz_distancia;
     //Paso 1. Vector de min distancias
     for(int i=0;i<matriz_distancia.size();i++)
@@ -300,10 +339,28 @@ int main() {
     }
     min_val_ori = min_values;
     //imprimir(min_val_ori);
-    disociativo();
-    resto_indices();
-    //t = clock() - t;
-//    printf ("Me tomo  (%f seconds) realizar el procedimiento de Amalgamiento simple.\n",((float)t)/CLOCKS_PER_SEC);
+    int i;
+
+    t = clock();
+    for(i=0;i<200;i++) {
+        disociativo();
+    }
+    t = clock() - t;
+    //resto_indices();
+    printf ("Me tomo  (%f seconds) realizar el procedimiento de Algoritmo Disociativo.\n",((float)t)/CLOCKS_PER_SEC);
+    int pos;
+    cout<<"Los cluster Finales con K "<<i<<" son: "<<endl;
+
+ /*   for(int y=0;y<genes_group.size();y++)
+    {
+        for(int j=0;j<genes_group[y].size();j++)
+        {
+            pos = genes_group[y][j];
+            cout<<gen_nom[pos][0]<<"     ";
+        }
+        cout<<endl;
+    }*/
+    //imprimir(clusters);
 
     return 0;
 }
