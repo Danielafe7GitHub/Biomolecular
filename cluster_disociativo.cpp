@@ -22,7 +22,7 @@ void read_file()
     vector<string> fila;
     string nombre;
     string line;
-    ifstream myfile ("C:/Users/UX310UQ/CLionProjects/AlgoritmoDisociativo/genes.txt");
+    ifstream myfile ("/home/ucsp/CLionProjects/genes.txt");
     if (myfile.is_open())
     {
         while ( getline (myfile,line) )
@@ -146,7 +146,7 @@ void init()
 
 int iteracion = 0;
 int num_cluster = 224;
-        //150 CLUSTERS CON K = 168 //200 CLUSTERS CON K = 224 //100 CLUSTERS CON K = 113 //50 CLUSTERS CON K = 59
+//150 CLUSTERS CON K = 168 //200 CLUSTERS CON K = 224 //100 CLUSTERS CON K = 113 //50 CLUSTERS CON K = 59
 void disociativo()
 {
     //cout<<"k: "<<iteracion<<endl;
@@ -182,7 +182,7 @@ void disociativo()
             _index = 0;
 
         }
-       // if(i != _index)
+        // if(i != _index)
 
     }
 
@@ -190,7 +190,7 @@ void disociativo()
     if(_add == 1 && iteracion < num_cluster)
     {
         //disociativo();
-        cout<<"Se unio el cluster"<<endl;
+        //cout<<"Se unio el cluster"<<endl;
     }
     else if (_add == 0)
     {
@@ -218,7 +218,7 @@ void disociativo()
         if(iteracion < num_cluster)
         {
             //disociativo();
-            cout<<"Se unio el cluster"<<endl;
+            //---cout<<"Se unio el cluster"<<endl;
         }
     }
     else
@@ -228,6 +228,23 @@ void disociativo()
     }
 }
 
+int res = 0;
+void resto()
+{
+    std::vector<int>::iterator it;
+    cout<<"---------------"<<endl;
+    for(int i=0;i<832;i++)
+    {
+        it = find(clusters_index.begin(), clusters_index.end(), i);
+        if (it == clusters_index.end())
+        {
+            res++;
+            cout<<gen_nom[i]<<"   ";
+        }
+    }
+    cout<<endl;
+    cout<<"all: "<<res+clusters_index.size()<<endl;
+}
 void imprimir_cluster()
 {
     cout<<"Tam: "<<cluster_all_index.size()<<endl;
@@ -246,16 +263,22 @@ void imprimir_cluster()
 
 int main()
 {
+    //150 CLUSTERS CON K = 168 //200 CLUSTERS CON K = 224 //100 CLUSTERS CON K = 113 //50 CLUSTERS CON K = 59
+    clock_t t;
     //matriz_distancia = {{0,2.15,0.7,1.07,0.85,1.16,1.56},{2.15,0,1.53,1.14,1.38,1.01,2.83},{0.7,1.53,0,0.43,0.21,0.51,1.86},{1.07,1.14,0.43,0,0.29,0.22,2.04},{0.85,1.38,0.21,0.29,0,0.41,2.02},{1.16,1.01,0.55,0.22,0.41,0,2.05},{1.56,2.83,1.86,2.04,2.02,2.05,0}};
     //gen_nom = {"A","B","C","D","E","F","G"};
     read_file();
     string_to_float();
     gen_distancia();
     init();
+    t = clock();
     disociativo();
-    for(int i= 0;i<53;i++)
+    for(int i= 0;i<222;i++)
         disociativo();
+    t = clock() - t;
+    printf ("Me tomo  (%f seconds) realizar el procedimiento de Algortimo Disociativo.\n",((float)t)/CLOCKS_PER_SEC);
     imprimir_cluster();
+    resto();
     cout<<"Salio"<<endl;
     return 0;
 }
