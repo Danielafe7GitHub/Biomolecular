@@ -113,7 +113,7 @@ void gen_distancia()
         matriz_distancia.push_back(tmp);
 
     cout<<"Filas: "<<matriz_distancia.size()<<" colu: "<<matriz_distancia[0].size()<<endl;
-   for(int i=0;i<matriz_distancia.size();i++)
+    for(int i=0;i<matriz_distancia.size();i++)
     {
         for(int j=0;j<matriz_distancia.size();j++)
         {
@@ -173,19 +173,19 @@ void min_cluster()
     //Unimos menor distancia (debajo de la diagonal)
     //min_element();
 
-    for(int i=0;i<200;i++)//831|6
+    for(int i=0;i<50;i++)//831|6
     {
         int first = min(indx_m,indx_n);
         int second = max(indx_m,indx_n);
         //cout<<"K = "<<i+1<<" Min Value: "<<_min<<" Unimos: "<<first<<" y "<<second<<endl;
-       /* cout<<"K = : "<<i<<endl;
-        cout<<"Unimos los genes: ";
-        for(int k=0;k<gen_nom[first].size();k++)
-            cout<<gen_nom[first][k]<<"    ";
-        cout<<"con  ";
-        for(int k=0;k<gen_nom[second].size();k++)
-            cout<<gen_nom[second][k]<<"    ";
-        cout<<endl;*/
+         cout<<"Cluster : "<<i<<"   ";
+         //cout<<"Unimos los genes: ";
+         for(int k=0;k<gen_nom[first].size();k++)
+             cout<<gen_nom[first][k]<<"    ";
+         //cout<<"con  ";
+         for(int k=0;k<gen_nom[second].size();k++)
+             cout<<gen_nom[second][k]<<"    ";
+         cout<<endl;
         //Actualizamos los nombres
         for(int k=0;k<gen_nom[second].size();k++)
             gen_nom[first].push_back(gen_nom[second][k]);
