@@ -97,37 +97,48 @@ void global_aligment()
 
 void traice_back()
 {
-    /*for(int i=0;i<m;i++)
+    int m = cadena_1.size();
+    int n = cadena_2.size();
+/*    for(int i=0;i<m;i++)
     {
-        for(int j=0;j<n;j++)
+        for(int j=0;j<n;j++) {
             cout<<matrix[i][j]<<"   ";
+        }
         cout<<endl;
-    }*/
+    }
+    cout<<"c1: "<<cadena_1<<endl;
+    cout<<"c2: "<<cadena_2<<endl;*/
+
     //Recorremos las columnas (tam cadena 2, la que queremos alinear)
     int fila = m - 1;
     int columna = n - 1;
+    int pos = n - 1;
     for(int i=n-1;i>=0;i--)
     {
         if(matrix[fila][columna] == 2) //Diagonal
         {
-            alineamiento.push_back(cadena_2[i]);
+            alineamiento.push_back(cadena_2[pos]);
             fila -= 1;
             columna -= 1;
+            pos--;
         }
         else if(matrix[fila][columna] == 3) //Horizontal
         {
             alineamiento.push_back('-');
             columna -= 1;
+            pos--;
         }
         else if(matrix[fila][columna] == 1) //Vertical
         {
             alineamiento.push_back('-');
             fila -= 1;
+            i++;//Nos quedamos quietos
         }
     }
+/*    cout<<"alineamiento : : "<<alineamiento<<endl;
+    cout<<"-----------------"<<endl;*/
 
 }
-
 
 
 int main()
