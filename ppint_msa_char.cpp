@@ -341,6 +341,8 @@ int main()
     string c8 = "CTACAGGCACCAGTCACCTAGCACGGAGAGCGGTGCAGAGGAATAATCACCTGG";
     string c9 = "ACCTCAACCTCAGGCAACCCAACACGGCAACCCCTCAGGCAACCCAACAC";
     string c10 = "AACACACCAACCAACCTCAGGCTCAGGCCGAGGAGAGAGCCTCAGGCCCTCACCCTCAGGCGGC";
+    
+    //https://docs.mql4.com/basis/types/integer/integertypes
 
     alineamientos_msa.push_back(c1);
     alineamientos_msa.push_back(c2);
